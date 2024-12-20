@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * This class sets up the race
  *
- * @author your name
+ * @author Magnus Dickerhof
  */
 public final class OlympicsHamsterGame extends SimpleHamsterGame {
 	List<RunnerHamster> runners;
@@ -23,16 +23,17 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 
 	@Override
 	protected void run() {
-		paule.write("Welcome to the first race of the day!");
-		setupTaskC();
-		race();
+		//paule.write("Welcome to the first race of the day!");
+		//setupTaskC();
+		//race();
 
-		paule.write("And now for the second race!");
-		setupTaskD();
-		race();
+		// paule.write("And now for the second race!");
+		// setupTaskD();
+		// race();
 
 		paule.write("To top it all off: Speedy`s attempt at beating the WORLD RECORD!");
 		recordAttempt();
+		race();
 	}
 
 	/**
@@ -43,12 +44,34 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 	 * Ensures that speedy needed at most 30 actions to reach the goal.
 	 */
 	private void recordAttempt() {
+
 		final RunnerHamster speedy = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 
-		// put your code for bonustask (f) between here...
-		
-		
-		
+		final RacePlan tacticSteadily = new RunSteadilyRacePlan();
+		final FeedingStrategy tacticFeedTwice = new FeedTwiceStrategy();
+
+		speedy.setRacePlan(tacticSteadily);
+		speedy.setFeedingTactics(tacticFeedTwice);
+
+		while(!speedy.hasFinished()) {
+			
+			if (speedy.getEnergyRemaining() == 0) {
+				speedy.setRacePlan(new RunSlowlyRacePlan());
+				speedy.executeNextAction();
+			}
+
+			else if (speedy.getEnergyRemaining() >= 20){
+				speedy.setRacePlan(new SprinterRacePlan());
+				speedy.executeNextAction();
+			}
+
+			else{
+				speedy.setRacePlan(tacticSteadily);
+				speedy.executeNextAction();
+			}
+		}
+
+
 		// ...and here. Do NOT put any code after here.
 
 		if (speedy.hasFinished()) {
@@ -74,15 +97,21 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 		final RunnerHamster steadyRunner = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 		final RunnerHamster sprintingRunner =
 				new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
+		// final RunnerHamster slowlyHammster = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 
 		final RacePlan tacticSteady = new RunSteadilyRacePlan();
 		steadyRunner.setRacePlan(tacticSteady);
 
+
 		final RacePlan tacticSprinting = new SprinterRacePlan();
 		sprintingRunner.setRacePlan(tacticSprinting);
 
+		//final RacePlan tacticSlowly = new RunSlowlyRacePlan();
+		//slowlyHammster.setRacePlan(tacticSlowly);
+
 		runners.add(steadyRunner);
 		runners.add(sprintingRunner);
+		//runners.add(slowlyHammster);
 	}
 
 	/**
