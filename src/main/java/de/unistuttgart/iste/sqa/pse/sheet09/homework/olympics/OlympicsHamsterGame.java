@@ -47,10 +47,10 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 
 		final RunnerHamster speedy = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 
-		final RacePlan tacticSteadily = new RunSteadilyRacePlan();
+		final RacePlan tacticSprinter = new SprinterRacePlan();
 		final FeedingStrategy tacticFeedTwice = new FeedTwiceStrategy();
 
-		speedy.setRacePlan(tacticSteadily);
+		speedy.setRacePlan(tacticSprinter);
 		speedy.setFeedingTactics(tacticFeedTwice);
 
 		while(!speedy.hasFinished()) {
@@ -60,13 +60,13 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 				speedy.executeNextAction();
 			}
 
-			else if (speedy.getEnergyRemaining() >= 20){
+			else if (speedy.getEnergyRemaining() >= 5){
 				speedy.setRacePlan(new SprinterRacePlan());
 				speedy.executeNextAction();
 			}
 
 			else{
-				speedy.setRacePlan(tacticSteadily);
+				speedy.setRacePlan(new RunSteadilyRacePlan());
 				speedy.executeNextAction();
 			}
 		}
@@ -97,7 +97,7 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 		final RunnerHamster steadyRunner = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 		final RunnerHamster sprintingRunner =
 				new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
-		// final RunnerHamster slowlyHammster = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
+		final RunnerHamster slowlyHammster = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 
 		final RacePlan tacticSteady = new RunSteadilyRacePlan();
 		steadyRunner.setRacePlan(tacticSteady);
@@ -106,12 +106,12 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 		final RacePlan tacticSprinting = new SprinterRacePlan();
 		sprintingRunner.setRacePlan(tacticSprinting);
 
-		//final RacePlan tacticSlowly = new RunSlowlyRacePlan();
-		//slowlyHammster.setRacePlan(tacticSlowly);
+		final RacePlan tacticSlowly = new RunSlowlyRacePlan();
+		slowlyHammster.setRacePlan(tacticSlowly);
 
 		runners.add(steadyRunner);
 		runners.add(sprintingRunner);
-		//runners.add(slowlyHammster);
+		runners.add(slowlyHammster);
 	}
 
 	/**
@@ -125,9 +125,14 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 	 */
 	private void setupTaskD() {
 		runners = new LinkedList<RunnerHamster>();
+		final RunnerHamster slowlyHammster = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
 		final RunnerHamster steadyRunner = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
-		final RunnerHamster sprintingRunner =
-				new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);
+		final RunnerHamster sprintingRunner = new RunnerHamster(game.getTerritory(), new Location(1, 1), Direction.EAST);		
+
+		final RacePlan tacticSlow = new RunSlowlyRacePlan();
+		final FeedingStrategy tacticFeedNever = new FeedNeverStrategy();
+		slowlyHammster.setRacePlan(tacticSlow);
+		slowlyHammster.setFeedingTactics(tacticFeedNever);
 
 		final RacePlan tacticSteady = new RunSteadilyRacePlan();
 		final FeedingStrategy tacticFeedOnce = new FeedOnceStrategy();
@@ -139,6 +144,7 @@ public final class OlympicsHamsterGame extends SimpleHamsterGame {
 		sprintingRunner.setRacePlan(tacticSprinting);
 		sprintingRunner.setFeedingTactics(tacticFeedTwice);
 
+		runners.add(slowlyHammster);
 		runners.add(steadyRunner);
 		runners.add(sprintingRunner);
 	}
